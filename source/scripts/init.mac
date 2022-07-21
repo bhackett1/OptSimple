@@ -1,0 +1,7 @@
+# init.mac
+# Basic, default settings
+/control/verbose 0
+/control/saveHistory
+/run/verbose 0
+
+

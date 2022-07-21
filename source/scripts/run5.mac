@@ -1,0 +1,9 @@
+#Run 5 macro
+
+/ne697/material/det_material G4_Ge
+
+/run/initialize
+
+/gun/energy 300 keV
+
+/run/beamOn 100000

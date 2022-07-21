@@ -1,0 +1,7 @@
+#Run 4 macro
+
+/ne697/gun/offset 50 cm
+
+/run/initialize
+
+/run/beamOn 100000

@@ -1,0 +1,5 @@
+#Run 6 macro
+
+/run/initialize
+
+/run/beamOn 100000

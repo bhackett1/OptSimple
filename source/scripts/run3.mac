@@ -1,0 +1,8 @@
+#Run 3 macro
+
+/run/initialize
+
+/gun/particle gamma
+/gun/energy 300 keV
+
+/run/beamOn 100000
