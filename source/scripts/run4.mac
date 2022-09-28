@@ -1,6 +1,6 @@
 #Run 4 macro
 
-/ne697/gun/offset 50 cm
+#/ne697/gun/offset 50 cm
 
 /run/initialize
 

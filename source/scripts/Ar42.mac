@@ -1,0 +1,8 @@
+#Run Ar-42 background 
+
+/run/initialize
+
+/gun/particle ion 
+/gun/ion 18 42
+
+/run/beamOn 10

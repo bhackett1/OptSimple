@@ -19,9 +19,9 @@ namespace ne697 {
     G4VUserDetectorConstruction(),
     m_trackingVols(),
     m_detThickness(5.*cm),
-    m_detRadius(10.*cm),
-    m_detMaterial("G4_SODIUM_IODIDE"),
-    m_worldMaterial("NE697_LIQUID_AR"),
+    m_detRadius(50.*cm),
+    m_detMaterial("G4_AIR"),
+    m_worldMaterial("G4_SODIUM_IODIDE"),
     m_detGeometry("Cylinder")
     {
       G4cout << "Creating DetectorConstruction" << G4endl;
@@ -65,7 +65,7 @@ namespace ne697 {
 
     //Create PEN shape
     //Import CAD Shape
-    auto PEN_mesh = CADMesh::TessellatedMesh::FromSTL("./Body98.stl");
+    auto PEN_mesh = CADMesh::TessellatedMesh::FromSTL("./Capsule.stl");
 
     //Define PEN material
     auto PEN_mat = nist->FindOrBuildMaterial("NE697_PEN");
@@ -76,13 +76,34 @@ namespace ne697 {
 
     auto PEN_logic = new G4LogicalVolume(PEN_mesh->GetSolid(),PEN_mat,"PEN_logic");
     new G4PVPlacement( rotation,
-			G4ThreeVector(19*cm,-21*cm,0*cm),
+			G4ThreeVector(0*cm,0*cm,-5*cm),
 			PEN_logic,
 			"PEN_phys",
 			world_log,
 			false,
 			0,
 			true);
+
+    auto HPGE_mat = nist->FindOrBuildMaterial("G4_Ge");
+
+    auto solidHPGE = new G4Tubs("solidHPGE",
+                                0.*mm,
+                                24.6*mm,
+                                23.5*mm,
+                                0.0*rad,CLHEP::twopi*rad);
+
+    auto logicHPGE = new G4LogicalVolume(solidHPGE, HPGE_mat, "logicHPGE");
+    m_trackingVols.push_back(logicHPGE);
+    new G4PVPlacement(
+      nullptr,
+      G4ThreeVector(0, 0.*cm, 0*cm),
+      logicHPGE,
+      "physHPGE",
+      world_log,
+      false,
+      0,
+      true
+    );
 
 
     auto det_mat = nist->FindOrBuildMaterial(m_detMaterial);
@@ -99,7 +120,7 @@ namespace ne697 {
       m_trackingVols.push_back(det_log);
       new G4PVPlacement(
         nullptr,
-        G4ThreeVector(0, 0.*cm, 0*cm),
+        G4ThreeVector(0*cm, 0.*cm, 0*cm),
         det_log,
         "det_phys",
         world_log,
@@ -179,8 +200,8 @@ namespace ne697 {
                                0.02381, 0.00056, 8.23e-5};
     PEN_mpt->AddProperty("RINDEX", energiesPEN, rindexPEN, 10);
     PEN_mpt->AddProperty("ABSLENGTH", energiesPEN, abslengthPEN, 10);
-    PEN_mpt->AddProperty("FASTCOMPONENT", energiesPEN, emissionPEN, 10);
-    PEN_mpt->AddConstProperty("YIELDRATIO", 1.);
+    PEN_mpt->AddProperty("SCINTILLATIONCOMPONENT1", energiesPEN, emissionPEN, 10);
+    // PEN_mpt->AddConstProperty("YIELDRATIO", 1.);
     PEN_mpt->AddProperty("WLSABSLENGTH",energiesPEN, abslengthPEN, 10);
     PEN_mpt->AddProperty("WLSCOMPONENT", energiesPEN, emissionPEN, 10);
     PEN_mpt->AddConstProperty("WLSTIMECONSTANT", 0.5 * ns);
@@ -196,13 +217,13 @@ namespace ne697 {
     auto Ar38 = new G4Isotope("LAr-Ar38", 18, 38, 37.9627*g/mole);
     auto Ar36 = new G4Isotope("LAr-Ar36", 18, 36, 35.9675*g/mole);
 
-    auto nat_Ar = new G4Element("NE697_natAr", "LAr_ne697", 3);
+    auto nat_Ar = new G4Element("natAr", "natAr", 3);
     nat_Ar->AddIsotope(Ar40, 99.604*perCent);
     nat_Ar->AddIsotope(Ar38, 0.063*perCent);
     nat_Ar->AddIsotope(Ar36, 0.333*perCent);
     //
 
-    auto liq_Ar = new G4Material("NE697_LIQUID_AR", 1.3982*g/cm3, 1);
+    auto liq_Ar = new G4Material("LIQUID_AR", 1.3982*g/cm3, 1);
     liq_Ar->AddElement(nat_Ar, 1);
     G4cout << "Liquid Argon MATERIAL: " << liq_Ar << G4endl;
 
@@ -227,7 +248,7 @@ namespace ne697 {
                                0. };
     lAr_mpt->AddProperty("RINDEX", energiesLAr, rindexLAr, 10);
     lAr_mpt->AddProperty("ABSLENGTH", energiesLAr, abslengthLAr, 10);
-    lAr_mpt->AddProperty("FASTCOMPONENT", energiesLAr, emissionLAr, 10);
+    lAr_mpt->AddProperty("SCINTILLATIONCOMPONENT1", energiesLAr, emissionLAr, 10);
     lAr_mpt->AddConstProperty("YIELDRATIO", 1.);
     //Predicting transport effects of scintillation light signals in large-scale liquid argon detectors, 2021
     lAr_mpt->AddConstProperty("SCINTILLATIONYIELD", 40000./MeV);
@@ -247,7 +268,7 @@ namespace ne697 {
 
     // NaI scintillation
     double emission[2] = { 1.0, 1.0 };
-    nai_mpt->AddProperty("FASTCOMPONENT", energies, emission, 2);
+    nai_mpt->AddProperty("SCINTILLATIONCOMPONENT1", energies, emission, 2);
     nai_mpt->AddConstProperty("SCINTILLATIONYIELD", 38./MeV);
     nai_mpt->AddConstProperty("FASTTIMECONSTANT", 250.*ns);
     nai_mpt->AddConstProperty("FASTSCINTILLATIONRISETIME", 0.5*us);

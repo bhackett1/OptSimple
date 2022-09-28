@@ -3,6 +3,7 @@
 
 #include "G4ParticleGun.hh"
 #include "G4VUserPrimaryGeneratorAction.hh"
+#include "detectorconstruction.hpp"
 
 namespace ne697 {
 
@@ -20,6 +21,8 @@ namespace ne697 {
 
     private:
       G4ParticleGun* m_gun;
+
+      DetectorConstruction* m_geo;
 
       GunMessenger* m_messenger;
 

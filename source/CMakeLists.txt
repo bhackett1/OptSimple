@@ -18,6 +18,7 @@ include(${Geant4_USE_FILE})
 
 file(GLOB SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 file(COPY ${PROJECT_SOURCE_DIR}/meshes/Body98.stl DESTINATION ${CMAKE_BINARY_DIR}/)
+file(COPY ${PROJECT_SOURCE_DIR}/meshes/Capsule.stl DESTINATION ${CMAKE_BINARY_DIR}/)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 add_executable(${APP_NAME} ${SOURCES})

@@ -5,13 +5,16 @@
 #include "QGSP_BERT_HP.hh"
 #include "actioninitialization.hpp"
 #include "detectorconstruction.hpp"
+#include "G4OpticalPhysics.hh"
 
 int main(int argc, char* argv[]) {
     auto* run_manager = G4RunManagerFactory::CreateRunManager(
         G4RunManagerType::Default);
     // Physics
     auto physics_list = new QGSP_BERT_HP;
+    // auto physics_list = new G4OpticalPhysics;
     physics_list->SetVerboseLevel(0);
+    physics_list->RegisterPhysics(new G4OpticalPhysics);
     run_manager->SetUserInitialization(physics_list);
     // Geometry
     run_manager->SetUserInitialization(new ne697::DetectorConstruction);

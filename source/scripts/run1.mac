@@ -2,4 +2,8 @@
 
 /run/initialize
 
-/run/beamOn 100000
+/gun/particle opticalphoton 
+
+/gun/energy 1 eV
+
+/run/beamOn 10
